@@ -23,7 +23,11 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-
+        with:
+         packages: >
+          platform-tools
+          platforms;android-36
+          build-tools;36.0.0
       - name: Restore Keystore and Env
         run: |
           if [ ! -f "debug.keystore" ] && [ -f "debug.keystore.base64" ]; then
