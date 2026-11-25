@@ -24,16 +24,27 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-         packages: >
-          platform-tools
-          platforms;android-36
-          build-tools;36.0.0
-          
+          packages: >
+            platform-tools
+            platforms;android-36
+            build-tools;36.0.0
+
       - name: Restore Keystore and Env
         run: |
-          if [ ! -f "debug.keystore" ] && [ -f "debug.keystore.base64" ]; then
+          if [ -f "debug.keystore.base64" ]; then
             base64 -d debug.keystore.base64 > debug.keystore
+          elif [ ! -f "debug.keystore" ]; then
+            keytool -genkeypair -v \
+              -keystore debug.keystore \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -dname "CN=Android Debug,O=Android,C=US" \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000
           fi
+
           if [ ! -f ".env" ] && [ -f ".env.example" ]; then
             cp .env.example .env
           fi
